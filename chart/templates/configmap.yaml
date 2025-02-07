@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "order-manager.fullname" . }}
+  labels:
+    {{- include "order-manager.labels" . | nindent 4 }}
+data:
+{{- range $envKey, $envVal := .Values.env }}
+  {{ $envKey }}: {{ $envVal | quote }}
+{{- end }}

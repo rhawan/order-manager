@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "order-manager.fullname" . }}
+  labels:
+    {{- include "order-manager.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "order-manager.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "order-manager.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "order-manager.fullname" . }}
+                {{- if or .Values.externalSecrets.enabled }}
+            - secretRef:
+                name: {{ include "order-manager.fullname" . }}
+              {{- end }}
+          env:
+            - name: ELASTIC_APM_ACTIVE
+              value: {{ $.Values.elastic.enabled | quote }}
+          {{- if $.Values.elastic.enabled }}
+            - name: ELASTIC_APM_ENVIRONMENT
+              value: {{ $.Values.elastic.tags.env }}
+            - name: ELASTIC_APM_SERVICE_NAME
+              value: {{ $.Values.elastic.tags.service }}
+            - name: ELASTIC_APM_SERVICE_VERSION
+              value: {{ $.Values.image.tag | quote }}
+            - name: ELASTIC_APM_VERIFY_SERVER_CERT
+              value: {{ $.Values.elastic.certVerify | quote }}
+            - name: ELASTIC_APM_SERVER_URL
+              value: {{ $.Values.elastic.url | quote }}
+          {{- end }}
+          # livenessProbe:
+          #   httpGet:
+          #     path: /actuator/health/liveness
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /actuator/health/readiness
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

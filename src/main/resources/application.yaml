@@ -1,0 +1,45 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: order-manager
+  profiles:
+    active: default
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_schema:
+        format_sql: false
+        open-in-view: false
+        show_sql: false
+        use_sql_comments: false
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+aws:
+  region: us-east-1
+  endpoint: http://localhost:4566
+  auth:
+    secret-key: localstack
+    access-key: localstack
+  sqs:
+    order-queue: order-queue
+    polling-delay: 1000
+    max-poll-size: 5
+
+logging:
+  group:
+    ordermanager: br.com.ordermanager
+  level:
+    ordermanager: INFO
+    root: INFO
+  file:
+    name: /tmp/app.log
+  pattern:
+    console: "%magenta(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}) [%green(%M)] [%green(%line)]: %msg%n%throwable"
+    level: "%5p"

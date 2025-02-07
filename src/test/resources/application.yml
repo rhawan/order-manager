@@ -1,0 +1,53 @@
+server:
+  port: 8080
+spring:
+  profiles:
+    active: test
+  application:
+    name: order-manager
+  main:
+    allow-bean-definition-overriding: true
+    jackson:
+      time-zone: America/Sao_Paulo
+      serialization:
+        fail-on-empty-beans: false
+      deserialization:
+        fail-on-unknown-properties: true
+      date-format: yyyy-MM-dd HH:mm:ss
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_schema:
+        format_sql: false
+        open-in-view: false
+        show_sql: false
+        use_sql_comments: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+aws:
+  region: us-east-1
+  endpoint: http://localhost:4566
+  auth:
+    secret-key: localstack
+    access-key: localstack
+  sqs:
+    order-queue: order-queue
+    polling-delay: 1000
+    max-poll-size: 5
+
+logging:
+  group:
+    ordermanager: br.com.ordermanager
+  level:
+    ordermanager: INFO
+    root: INFO
+  file:
+    name: /tmp/app.log
+  pattern:
+    console: "%white(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}) [%green(%M)] [%green(%line)]: %msg%n%throwable"
+    level: "%5p"
