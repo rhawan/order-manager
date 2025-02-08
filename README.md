@@ -66,32 +66,14 @@ After a successful order creation, the message that is published to the SQS queu
 
 ```json
 {
-  "eventId": "12345678-1234-1234-1234-1234567890ab",
-  "reference": "reference",
-  "data": {
-    "id": "12345",
-    "client": {
-      "id": "1",
-      "name": "John Doe",
-      "document": "123.456.789-00",
-      "email": "johndoe@example.com",
-      "cellphone": "+1234567890"
-    },
-    "products": [
-      {
-        "id": "12",
-        "name": "Product 1",
-        "description": "This is a sample product",
-        "salesPrice": 99.99
-      },
-      {
-        "id": "13",
-        "name": "Product 2",
-        "description": "Another sample product",
-        "salesPrice": 49.99
-      }
+    "Messages": [
+        {
+            "MessageId": "0bfc0e4c-f579-4f38-9d7e-d60c96a7ad8b",
+            "ReceiptHandle": "NzQ4Y2M5OTAtYzgyZC00MzgwLWFmY2ItMTgwMDA3ZTkwYTViIGFybjphd3M6c3FzOnVzLWVhc3QtMTowMDAwMDAwMDAwMDA6b3JkZXItcXVldWUgMGJmYzBlNGMtZjU3OS00ZjM4LTlkN2UtZDYwYzk2YTdhZDhiIDE3Mzg5NTc3MzMuMjY0MzE2Mw==",
+            "MD5OfBody": "37242ed848c77ab5822a1adf53634e14",
+            "Body": "{\"eventId\":\"f0735be8-b3ba-4c22-a8ee-33ef87bbfb12\",\"reference\":\"reference\",\"data\":\"{\\\"eventId\\\":\\\"f0735be8-b3ba-4c22-a8ee-33ef87bbfb12\\\",\\\"reference\\\":\\\"reference\\\",\\\"data\\\":{\\\"orderId\\\":\\\"7\\\",\\\"clientId\\\":\\\"5\\\",\\\"amount\\\":149.98}}\"}"
+        }
     ]
-  }
 }
 ```
 
